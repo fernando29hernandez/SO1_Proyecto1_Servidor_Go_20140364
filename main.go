@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"	
+	"log"
 	"net/http"	
 	"encoding/json"	
 	"math"
@@ -109,5 +110,5 @@ func main() {
 	router.HandleFunc("/datosmemoria", datosmemoriaHandler)
 	router.HandleFunc("/datoscpu", datosCPUHandler)
 	fmt.Println("Servidor corriendo en http://localhost:80/")
-	log.Fatal(http.ListenAndServe(":80", router))
+	log.Fatal(http.ListenAndServe(":80", handler))
 }
