@@ -98,14 +98,16 @@ func datosCPUHandler(response http.ResponseWriter, request *http.Request) {
 
 }
 
-var router = mux.NewRouter()
-func main(){
-	handler := cors.Default().Handler(router)
-	
-	http.Handle("/", router)
+func homeLink(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Welcome home!")
+}
 
+func main() {
+	router := mux.NewRouter().StrictSlash(true)
+	handler := cors.Default().Handler(router)
+	router.HandleFunc("/", homeLink)
 	router.HandleFunc("/datosmemoria", datosmemoriaHandler)
 	router.HandleFunc("/datoscpu", datosCPUHandler)
 	fmt.Println("Servidor corriendo en http://localhost:80/")
-	http.ListenAndServe(":80", handler)
+	log.Fatal(http.ListenAndServe(":80", router))
 }
