@@ -4,9 +4,7 @@ import (
 	"fmt"	
 	"net/http"	
 	"encoding/json"	
-	"math"	
-	"regexp"
-	"strconv"
+	"math"
 	"github.com/shirou/gopsutil/cpu"
 	"github.com/shirou/gopsutil/process"
 	"github.com/gorilla/mux"
@@ -30,35 +28,6 @@ type struct_datos struct{
 		TotalZombie int
 		Procesos []PROCESO
 	}
-var cantidadRunning, cantidadSleeping, cantidadStoped, cantidadZombie int
-var arreglo_procesos [] PROCESO
-func datosProcesosHandler(response http.ResponseWriter, request *http.Request) {
-	cantidadRunning = 0
-	cantidadSleeping = 0
-	cantidadStoped = 0
-	cantidadZombie = 0
-	arreglo_procesos = nil 
-	lista_procesos,_ := process.Processes()
-	for _ , p2 := range lista_procesos{
-		usuario, _ := p2.Username() 
-		estado, _ := p2.Status() 
-		memoria, _ := p2.MemoryPercent()
-		nombre , _ := p2.Name()
-		arreglo_procesos = append(arreglo_procesos, PROCESO{PID : p2.Pid, Usuario : usuario, Estado : obtenerEstado(estado), Memoria : memoria, Nombre : nombre, Proceso : p2})
-	}
-	response.Header().Set("Content-Type","application/json")
-	response.WriteHeader(http.StatusOK)
-	datos := struct_datos {
-		TotalProcesos : len(arreglo_procesos),
-		TotalEjecucion : cantidadRunning,
-		TotalSuspendidos : cantidadSleeping,
-		TotalDetenidos : cantidadStoped,
-		TotalZombie : cantidadZombie,
-		Procesos : arreglo_procesos,
-	}
-	datos_json , _ := json.Marshal(datos)
-	response.Write(datos_json)
-}
 
 
 const (
@@ -131,7 +100,7 @@ func datosCPUHandler(response http.ResponseWriter, request *http.Request) {
 
 var router = mux.NewRouter()
 func main(){
-	handler := cors.Default().Handler(mux)
+	handler := cors.Default().Handler(router)
 	router.HandleFunc("/datosprocesos", datosProcesosHandler) //Página principal de la aplicación
 	router.HandleFunc("/datosmemoria", datosmemoriaHandler)
 	router.HandleFunc("/datoscpu", datosCPUHandler)
