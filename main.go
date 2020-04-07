@@ -101,6 +101,9 @@ func datosCPUHandler(response http.ResponseWriter, request *http.Request) {
 var router = mux.NewRouter()
 func main(){
 	handler := cors.Default().Handler(router)
+	
+	http.Handle("/", router)
+
 	router.HandleFunc("/datosmemoria", datosmemoriaHandler)
 	router.HandleFunc("/datoscpu", datosCPUHandler)
 	fmt.Println("Servidor corriendo en http://localhost:80/")
